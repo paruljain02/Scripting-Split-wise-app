@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="">
+
+    <head>
+	
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="icon" type="image/gif/png" href="assets/img/logo.png">
+        <title>Splitwise</title>
+		
+		
+        <!-- CSS -->
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/css/animate.css">
+		    <link rel="stylesheet" href="assets/css/form-elements.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/media-queries.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        
+				
+		<!-- script -->
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+        <script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        
+
+
+    </head>
+
+    <body>
+
+        <!-- Loader -->
+    	
+
+		<!-- Top menu -->
+		<nav class="navbar navbar-inverse navbar-fixed-top navbar-no-bg" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="index.html"><strong style="font-size:30px;">S P L I T W I S E</strong></a>
+				</div>
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse" id="top-navbar-1">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a class="scroll-link" href="#top-content">Home</a></li>
+						<li><a class="scroll-link" href="#features">Summary</a></li>
+						<li><a class="scroll-link" href="#testimonials">Add buddies</a></li>
+						<li><a class="scroll-link" href="#how-it-works">Add bill</a></li>
+						<li><a class="scroll-link" href="#testimonials">Settle Up</a></li>
+						<li><a href="index.html">LogOut</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+        <!-- Top content table -->
+        <div class="top-content">
+
+            <div class="inner-bg">
+                <div class="container">
+          
+                <div class="row">
+                  <div class="col-sm-8 col-sm-offset-2 text">
+                  <div class="description wow fadeInLeftBig">
+                      <div class="row">
+                          <div class="col-sm-6 col-sm-offset-0">
+                            <button class="btn" id="b8" type="button" >Show owes</button>
+                            <hr />
+                            <div id="dvTable" >
+                            </div>
+                          </div>
+                      
+                          <div class="col-sm-4 col-sm-offset-2" >
+                            <button class="btn" id="b7" type="button" >Show owns</button>
+                            <hr />
+                            <div id="dvTable1" >
+                            </div>
+                          </div>
+                      </div>
+                <script type="text/javascript">
+                
+                var k= localStorage.getItem('k');
+                    //console.log(k);
+                    var ownslen;
+                    var owner;
+                    var stringg;
+                    var dat = {
+                      pie: k
+                    };
+  /*********************************owns****************************/
+                        $.ajax({    
+                        type: "post",
+                        url: "http://localhost:3000/tableowns",
+                        data: dat,
+                        cache:false,
+                        dataType :'json',
+                        encode : true
+                        }).done(function(data4)
+                        {
+                          console.log(data4);
+                          owner=data4;
+                          console.log(owner[0].image_path);
+
+                          ownslen=data4.length;
+
+                        })
+                        $("#b7").on("click",
+                        function()
+                          {
+                            console.log(owner);
+                             var tableowes=new Array();
+                             tableowes.push(["Date","Description","Owns to","Amount Owns"])
+                             for(var i=0;i<ownslen;i++)
+                             {
+                               /* var x= "<a href = \""+owner[i].image_path+"\">"+"</a>";
+                                console.log(x);*/
+                              tableowes.push([owner[i].date1,owner[i].descript,owner[i].splitam,owner[i].totala]);
+                            }
+                              var table = document.createElement("TABLE" ); 
+                               table.style="width: 50%"
+                                table.border = "1";
+                                var columnCount = tableowes[0].length;
+                             
+                                var row = table.insertRow(-1);
+                              for (var i = 0; i < columnCount; i++) {
+                                    var headerCell = document.createElement("TH");
+                                    headerCell.innerHTML = tableowes[0][i];
+                                    row.appendChild(headerCell);
+                                }
+                             
+                                //Add the data rows.
+                                for (var i = 1; i < tableowes.length; i++) {
+                                    row = table.insertRow(-1);
+                                    for (var j = 0; j < columnCount; j++) {
+                                        var cell = row.insertCell(-1);
+                                        cell.innerHTML = tableowes[i][j];
+                                    }
+                                }
+                             
+                                var dvTable = document.getElementById("dvTable");
+                                dvTable1.innerHTML = "";
+                                dvTable1.appendChild(table);
+
+                             
+                          } )
+  /*****************************************owes********************/
+                        var len;
+                        var xxx;
+                        $.ajax({    
+                        type: "post",
+                        url: "http://localhost:3000/tableowes",
+                        data: dat,
+                        cache:false,
+                        dataType :'json',
+                        encode : true
+                        }).done(function(data)
+                        {
+                          console.log(data)
+                          xxx=data
+                          len=data.length;
+                          //console.log(data[0].paid_by[0]);
+                          
+                        })
+                        $("#b8").on("click",
+                        function()
+                          {
+                             var tableowes=new Array();
+                             tableowes.push(["Date","Description","Owes to","Amount Owes"])
+                             for(var i=0;i<len;i++)
+                             {
+                              tableowes.push([xxx[i].date1,xxx[i].descript,xxx[i].paid_by,xxx[i].totala]);
+                            }
+                              var table = document.createElement("TABLE" ); 
+                               table.style="width: 50%"
+                                table.border = "1";
+                                var columnCount = tableowes[0].length;
+                             
+                                var row = table.insertRow(-1);
+                              for (var i = 0; i < columnCount; i++) {
+                                    var headerCell = document.createElement("TH");
+                                    headerCell.innerHTML = tableowes[0][i];
+                                    row.appendChild(headerCell);
+                                }
+                             
+                                //Add the data rows.
+                                for (var i = 1; i < tableowes.length; i++) {
+                                    row = table.insertRow(-1);
+                                    for (var j = 0; j < columnCount; j++) {
+                                        var cell = row.insertCell(-1);
+                                        cell.innerHTML = tableowes[i][j];
+                                    }
+                                }
+                             
+                                var dvTable = document.getElementById("dvTable");
+                                dvTable.innerHTML = "";
+                                dvTable.appendChild(table);
+
+                             
+                          } )
+              </script>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+      <!-- Summary pie chart -------------------------------->
+        <!-- Summary -->
+        <div class="features-container section-container">
+          <div class="container">
+              <div class="row">
+                  <div class="col-sm-12 features section-description wow fadeIn">
+                      <h2><strong>Summary</strong> </h2>
+                      <div class="divider-1 wow fadeInUp"><span></span></div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div id="chartContainer" style="height: 300px; width: 100%;"></div> 
+                  <script type="text/javascript">
+                    var k= localStorage.getItem('k');
+                    console.log(k);
+                    var owe;
+                    var owns;
+
+                    var dat = {
+                      pie: k
+                    };
+
+
+
+  ///////////////////////////////////////
+                        $.ajax({    
+                        type: "post",
+                        url: "http://localhost:3000/owns",
+                        data: dat,
+                        cache:false,
+                        dataType :'json',
+                        encode : true
+                        }).done(function(data4)
+                        {
+                          console.log('11');
+                          //owe=dat[0].totala;
+                          var len=data4.length;
+                          var add=0;
+                           for(var i=0;i<len;i++)
+                           {
+                           add+=Number(data4[i].totala);
+                           }
+                          console.log("owns"+" "+add);
+                          owns=add;
+                          //alert(owns);
+                         // console.log(owe);
+                        })
+///////////////////////////////////////////////////
+
+
+                    $.ajax({    
+                        type: "post",
+                        url: "http://localhost:3000/chart",
+                        data: dat,
+                        cache:false,
+                        dataType :'json',
+                        encode : true
+                        }).done(function(dat)
+                        {
+                          //alert('helo');
+                          console.log(dat);
+                          //owe=dat[0].totala;
+                          var len=dat.length;
+                          var add=0;
+                          for(var i=0;i<len;i++)
+                           {
+                           add+=Number(dat[i].totala);
+                           }
+                           owe=add;
+                          console.log("owe"+" "+owe);
+                          //alert(len);
+                          //console.log(owe);
+                        })
+                      window.onload = function () {
+                      var chart = new CanvasJS.Chart("chartContainer",
+                      {
+                        title:{
+                          text: "Outstanding expense account (in INR)"
+                        },
+                        legend: {
+                          maxWidth: 350,
+                          itemWidth: 120
+                        },
+                        data: [
+                        {
+                          type: "pie",
+                          showInLegend: true,
+                          legendText: "{indexLabel}",
+                          dataPoints: [
+                            { y: owe, indexLabel: "You owe" },
+                            { y: owns, indexLabel: "You are owned" }
+                          ]
+                        }
+                        ]
+                      });
+                      chart.render();
+                    }
+          </script>
+        </div>
+    </div>
+  </div>
+        
+
+		<!-- More features -->
+           <!-- add buddies  -->
+  <div class="testimonials-container section-container " style="background-image: url(/bg.jpg);">
+        
+            <div class="container" >
+                <div class="row">
+                    <div class="col-sm-12 testimonials section-description wow fadeIn">
+                        <h2><strong>ADD YOUR</strong> BUDDIES</h2>
+                        <div class="divider-1 wow fadeInUp"><span></span></div>
+                    </div>
+                </div>
+                <div class="container" style="padding-left: 30%">
+
+                   <form style="float: center;padding-right: 40%;" method="post" action="http://localhost:3000/friend">
+                   
+                      <select name="entry" id="selectOne">
+                    <option value="Mobile" selected>Mobile Number</option>
+                    <option value="email">Email</option>
+                  </select>
+                  <br><br>
+                  <div class="form-group">
+                           
+                        <input type="text" id="usrname" class="form-control" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+
+                        <input type="text" id="budd" class="form-control" placeholder="Email/Mobile number">
+                    </div>
+                    
+                    <button class="btn" value="ADD" id="btn_buddy" type="button" >ADD</button>
+                
+                   </form>
+                   </div>
+            </div>
+            
+        </div>
+
+   <script type="text/javascript">
+
+function validateEmail(email) {
+    console.log(email);
+  var re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]{1,12}(\.[a-zA-Z0-9]{1,15}){1,10}$/;
+  console.log(re.test(email));
+  return re.test(email);
+}
+
+      $(document).ready(function(){
+   $("#btn_buddy").click(function(){
+       var x = $('#selectOne :selected').text();
+       var login_user= localStorage.getItem('k');
+       if(x=="Mobile Number")
+           {
+           var mob = document.getElementById("budd").value;
+             console.log(mob);
+           var len = mob.length;
+           if(len==10)
+                   {
+                   
+                   console.log(login_user);
+                  var data = {
+                           username: $('#usrname').val(),
+                         uniq_val: $('#budd').val(),
+                          login_usr: login_user
+                        };
+                console.log("Sending: "+data.username+"  "+data.uniq_val+" "+data.login_usr);
+
+                $.ajax({    
+                    type: "post",
+                    url: "http://localhost:3000/friend",
+                    data: data,
+                    cache:false,
+                    dataType :'json',
+                    encode : true
+                }).done(function(data) {
+
+                    console.log(data);
+                 }); 
+              //   event.preventDefault();
+                       }
+           else
+                  {    
+                   document.getElementById("budd").value='';
+                alert('Mobile number should be of 10 digit');
+                   }
+        }
+         else
+               {
+                   var email=document.getElementById("budd").value;
+                   console.log(email);
+               if (validateEmail(email)) 
+                  {
+                      console.log(true);
+                      var data = {
+                           username: $('#usrname').val(),
+                         uniq_val: $('#budd').val(),
+                         login_usr: login_user
+                        };
+                        console.log("Sending: "+data.username+"  "+data.uniq_val);
+                        $.ajax({    
+                        type: "post",
+                        url: "http://localhost:3000/friend",
+                        data: data,
+                        cache:false,
+                        dataType :'json',
+                        encode : true
+                    }).done(function(data) {
+
+                        console.log(data);
+                     }); 
+                    // event.preventDefault();
+
+                  }
+                  else
+                  {
+                     document.getElementById("budd").value='';
+                     alert('Enter valid email address');
+                  }
+               }    
+        });
+     });
+   </script>
+
+
+        <!--bill -->
+        <div class="how-it-works-container section-container" style="background-image: none ;">
+	        <div class="container" style="background-image: none;">
+	            <div class="row">
+	                <div class="col-sm-12 col-sm-offset-1 how-it-works section-description wow fadeIn">
+	                    <h2><strong>ADD</strong> BILL</h2>
+	                    <div class="divider-1 wow fadeInUp"><span></span></div>
+	                </div>
+	            </div>
+	            <div class="container" style="padding-left: 18%" >
+        <div class="row">
+          <div class="col-sm-6 col-sm-offset-1 how-it-works-box wow fadeInUp">
+           	<div name="myform" role="form" id="bill" action="http://localhost:3000/BILL" method="post" style="float: center;padding-right: 40%; background-image: none;" novalidate>
+           		
+           			<div class="form-group">
+		                <input type="text" class="form-control" id="desc" style="background-color: rgba(0,0,0,0.1); color: #FFFFFF;" placeholder="Enter a description">
+		            </div>
+					     <div class="form-group ">
+		                <input type="Date" value="" class="form-control" id="dt" style="background-color: rgba(0,0,0,0.1); color: #FFFFFF;" placeholder="Enter date">
+		            </div>
+					
+		            
+		            <div class="form-group inner_addon left_addon " >
+
+		                <input type="number" class="form-control" min="0" id="total" style="background-color: rgba(0,0,0,0.1); color: #FFFFFF;" placeholder="Enter the amount to split(INR)">
+		                <!--<input id="split_btn" type="submit" name="register" class="btn btn-success" value="Split">-->
+		            </div>
+
+                  <form method="POST">
+                      <div id="dynamicInput1">
+                          <br>
+                      </div>
+                      <br>
+	                    <div id="dynamicInput">
+	                        <br>
+	                    </div>
+	                    <br>
+	                     <input class="btn btn-danger" value="Add Friend" onClick="addInput('dynamicInput','dynamicInput1');">
+	                </form><br><br>
+                <input type="file" id="i_file" value=""> 
+                <input type="button" id="i_submit" value="Submit">
+					<!-----------------------------------------  -->
+				</div>
+        </div>
+              <div class="col-sm-3 col-sm-offset-1 how-it-works-box wow fadeInUp">
+              <img src="" id="bill_path_temp" width="300" height="300" style="display:none;" />
+               <div id="disp_tmp_path"></div>
+
+				
+       	</div>
+ 				</div>
+	        </div>
+        </div>	
+		
+		<script type="text/javascript">
+		/***dynamic input***/
+		var counter=0;
+		var owner1= localStorage.getItem('k');
+		function addInput(divName,divName1)
+		{
+			//var owner= localStorage.getItem('k');
+			console.log(owner1);
+			var dat = {
+				user: owner1
+                };
+                $.ajax({    
+			        type: "post",
+			    	url: "http://localhost:3000/add",
+			        data: dat,
+			        cache:false,
+			        dataType :'json',
+			        encode : true
+			        }).done(function(dat) {
+			        //window.location.href = "./login.html";
+			        console.log("hello"+dat.length);
+			        counter=dat.length;
+              var newdiv2 = document.createElement('div');
+                newdiv2.innerHTML = "<label for='sel3' style ='color: #FFFFFF'>Share among friends (hold shift to select more than one):</label><select multiple class='form-control'  name='selp3[]' id='sel3' style='background-color: rgba(0,0,0,0.1); color: #FFFFFF;'>";
+                document.getElementById(divName1).appendChild(newdiv2);
+                var newdiv2 = document.createElement('option');
+                newdiv2.innerHTML = "you"+"("+owner1+")"+"</option></select>";
+                document.getElementById("sel3").appendChild(newdiv2);
+                  for(var i = 0 ;i<dat.length;i++)
+                  {
+                    var newdiv2 = document.createElement('option');
+                    if(i==dat.length-1)
+                    newdiv2.innerHTML = dat[i].text+"("+dat[i].mail+")"+"</option></select>";
+                    else
+                    newdiv2.innerHTML = dat[i].text+"("+dat[i].mail+")"+"</option>";
+                    document.getElementById("sel3").appendChild(newdiv2);
+
+                  }
+			        var newdiv = document.createElement('div');
+
+                  newdiv.innerHTML = "<label for='sel2' style ='color: #FFFFFF'>Share among friends (hold shift to select more than one):</label><select multiple class='form-control'  name='selp[]'  id='sel2' style='background-color: rgba(0,0,0,0.1); color: #FFFFFF;'>";
+                  document.getElementById(divName).appendChild(newdiv);
+                var newdiv = document.createElement('option');
+                newdiv.innerHTML = "you"+"("+owner1+")"+"</option></select>";
+                document.getElementById("sel2").appendChild(newdiv);
+                  for(var i = 0 ;i<dat.length;i++)
+                  {
+                    var newdiv = document.createElement('option');
+                    if(i==dat.length-1)
+                    newdiv.innerHTML = dat[i].text+"("+dat[i].mail+")"+"</option></select>";
+                  else
+                    newdiv.innerHTML = dat[i].text+"("+dat[i].mail+")"+"</option>";
+                    document.getElementById("sel2").appendChild(newdiv);
+
+                  }
+			    });              			
+		}
+
+		/***dynamic input***/
+
+        $(document).ready(function(){
+              var tmppath;
+              $('#i_file').change( function(event) {
+              tmppath = URL.createObjectURL(event.target.files[0]);
+              localStorage.setItem("tmppath", tmppath);
+              });
+            $("#i_submit").click(function(){
+                	//console.log("hello");
+                 var obj ={};
+                  var image_path;
+
+                /**paid*/
+
+                var paid = [];
+                var pd = document.getElementById("sel3");
+                 var listLength = pd.options.length;
+                 var k=0;
+                 for(var i=0;i<listLength;i++){
+                    if(pd.options[i].selected)
+                    {
+                      var str=pd.options[i].value;
+                      var str1=str.split("(");
+                      str1=str1[1].split(")");
+                      paid[k]=str1[0];
+                      k=k+1;
+                    }
+                  }
+                  console.log("hhhhhhh"+paid);
+                console.log(paid.length);
+               var counter2=paid.length;
+
+
+                /**split***/
+                var person = [];
+                var sel = document.getElementById("sel2");
+                 var listLength = sel.options.length;
+                 var k=0;
+                 for(var i=0;i<listLength;i++){
+                    if(sel.options[i].selected)
+                    {
+                      var str=sel.options[i].value;
+                      var str1=str.split("(");
+                      str1=str1[1].split(")");
+                      person[k]=str1[0];
+                      k=k+1;
+                    }
+                  }
+                  console.log(person);
+                console.log(person.length);
+                counter=person.length;
+                
+                var spval = $('#total').val()/(counter);
+                var i=0;
+                varj=0;
+                while(i<counter )
+                {
+                    	//var em = paid;
+                			var us = person[i];
+                			var pa = spval;
+                		  var data3 = {date1: $('#dt').val(),
+                            paid_by: paid,
+                            descript: $('#desc').val(),
+                            splitam: us,
+                            totala: pa,
+                            imagpath: localStorage.getItem("tmppath")
+                        };
+                        console.log(data3.paid_by);
+                			$.ajax({    
+			                    type: "post",
+			                    url: "http://localhost:3000/BILL",
+			                    data: data3,
+			                    cache:false,
+			                    dataType :'json',
+			                    encode : true
+			                }).done(function(data3) {
+			                   // window.location.href = "./login.html";
+			                    console.log(data3);
+
+                        alert("success");
+                
+                        $("#bill_path_temp").fadeIn("fast").attr('src',data3.imagpath);      
+
+			                 });
+			                
+                  i++;
+                }
+          		//return false;
+          		alert("Bill Added Successfully.. ")
+			                event.preventDefault();
+      
+                });
+        });
+        </script>
+
+        <!-- Testimonials -->
+        <div class="testimonials-container section-container" style="background-image: url(/bg.jpg);">
+	        <div class="container">
+	            
+	     
+	        </div>
+        </div>
+
+        <!-- Call to action -->
+      <!--<div class="call-to-action-container section-container section-container-image-bg">
+	        <div class="container">
+	            <div class="row">
+	                <div class="col-sm-12 call-to-action section-description wow fadeInLeftBig">
+	                    <h2><strong>Call</strong> to action</h2>
+	                    <div class="divider-1 wow fadeInUp"><span></span></div>
+	                    <p>
+	                    	Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut
+	                    	aliquip ex ea commodo consequat. Ut wisi enim ad minim veniam, quis nostrud.
+	                    </p>
+	                </div>
+	            </div>
+	            <div class="row">
+	            	<div class="col-sm-12 section-bottom-button wow fadeInUp">
+                        <a class="btn btn-link-1 scroll-link" href="#top-content">Sign up now</a>
+	            	</div>
+	            </div>
+	        </div>
+        </div> 
+
+        <!-- About us -->
+        <div class="about-us-container section-container">
+	        <div class="container">
+	            <div class="row">
+	                <div class="col-sm-12 about-us section-description wow fadeIn">
+	                    <h2><strong>Contact</strong> Us</h2>
+	                    <div class="divider-1 wow fadeInUp"><span></span></div>
+	                </div>
+	            </div>
+	            <div class="row">
+	                <div class="col-sm-4 about-us-box wow fadeInUp">
+		                <div class="about-us-photo">
+		                	<img src="assets/img/about/1.jpg" alt="" data-at2x="assets/img/about/1.jpg">
+		                </div>
+	                    <h3>Nikita Agrawal</h3>
+	                    <p>20172093<br>Nikita.agrawal@students.iiit.ac.in</p>
+	                    <div class="about-us-social">
+		                	<a href="https://www.facebook.com/nikita.agrawal.790"><i class="fa fa-facebook"></i></a>
+		                </div>
+	                </div>
+	                <div class="col-sm-4 about-us-box wow fadeInDown">
+		                <div class="about-us-photo">
+		                	<img src="assets/img/about/2.jpg" alt="" data-at2x="assets/img/about/2.jpg">
+		                </div>
+	                    <h3>Swati Tyagi</h3>
+	                    <p>20172096<br>Swati.tyagi@students.iiit.ac.in</p>
+	                    <div class="about-us-social">
+		                	<a href="https://www.facebook.com/swati.tyagi.9275"><i class="fa fa-facebook"></i></a>
+		                </div>
+	                </div>
+	                <div class="col-sm-4 about-us-box wow fadeInUp">
+		                <div class="about-us-photo">
+		                	<img src="assets/img/about/3.jpg" alt="" data-at2x="assets/img/about/3.jpg">
+		                </div>
+	                    <h3>Parul Jain</h3>
+	                    <p>20172107<br>Parul.jain@students.iiit.ac.in</p>
+	                    <div class="about-us-social">
+		                	<a href="https://www.facebook.com/profile.php?id=100020694223355"><i class="fa fa-facebook"></i></a>
+		                </div>
+	                </div>
+	            </div>
+	        </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+	        <div class="container">
+	        	<div class="row">
+                    <div class="col-sm-12 footer-social">
+                    	<a href="#"><i class="fa fa-facebook"></i></a>
+                    	<a href="#"><i class="fa fa-dribbble"></i></a>
+                    	<a href="#"><i class="fa fa-twitter"></i></a>
+                    	<a href="#"><i class="fa fa-instagram"></i></a>
+                    	<a href="#"><i class="fa fa-pinterest"></i></a>
+                    </div>
+	            </div>
+	            <div class="row">
+                    <div class="col-sm-12 footer-copyright">
+                    	&copy; weeeeee <a href="http://azmind.com">Azmind</a>.
+                    </div>
+                </div>
+	        </div>
+        </footer>
+
+
+        <!-- Javascript -->
+        <script src="assets/js/jquery-1.11.1.min.js"></script>
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/js/jquery.backstretch.min.js"></script>
+        <script src="assets/js/wow.min.js"></script>
+        <script src="assets/js/retina-1.1.0.min.js"></script>
+        <script src="assets/js/waypoints.min.js"></script>
+        <script src="assets/js/scripts.js"></script>
+
+        <!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+    </body>
+
+</html>
